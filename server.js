@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const session = require('express-session');
 const bodyParser = require('body-parser');
-const User = require('./models/User');
 const authRoutes = require('./routes/auth');
+require('./config/passport');  // Initialize passport configuration
 
 const app = express();
 
@@ -24,10 +24,12 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // MongoDB Connection
-mongoose.connect('mongodb://localhost:27017/alternative-hp', {
+mongoose.connect('mongodb://127.0.0.1:27017/alternative-hp', {
     useNewUrlParser: true,
     useUnifiedTopology: true
-});
+})
+    .then(() => console.log('MongoDB connected'))
+    .catch(err => console.log('MongoDB connection error: ', err));
 
 // Routes
 app.use('/auth', authRoutes);
@@ -35,4 +37,3 @@ app.use('/auth', authRoutes);
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
- 
